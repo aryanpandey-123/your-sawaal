@@ -1,6 +1,5 @@
-import 'package:YourSawaal/componet/Models/login_request_model.dart';
+import 'package:YourSawaal/componet/Models/login_response_model.dart';
 import 'package:YourSawaal/componet/api_service.dart';
-import 'package:YourSawaal/componet/config.dart';
 import 'package:YourSawaal/screens/forgotpass.dart';
 import 'package:YourSawaal/screens/home.dart';
 import 'package:flutter/material.dart';
@@ -16,11 +15,18 @@ class body extends StatefulWidget {
 }
 
 class bodystate extends State<body> {
+  final scaffoldkey = GlobalKey<ScaffoldState>();
   bool isAPIcallProcess = false;
   bool hidePassword = true;
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
   String? email;
   String? password;
+  late LoginRequestModel requestModel;
+  @override
+  void initState() {
+    super.initState();
+    requestModel = new LoginRequestModel();
+  }
 
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
@@ -28,6 +34,7 @@ class bodystate extends State<body> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+      // key: scaffoldkey,
       body: ProgressHUD(
         child: Form(key: globalFormKey, child: _loginUI(context)),
         inAsyncCall: isAPIcallProcess,
@@ -38,139 +45,214 @@ class bodystate extends State<body> {
 
   Widget _loginUI(BuildContext context) {
     return Container(
+        key: scaffoldkey,
         child: ListView(
-      //mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Positioned(
-          child: Image.asset("images/logo.png"),
-        ),
-        FormHelper.inputFieldWidget(context, "email", "Email Address",
-            (onValidateVal) {
-          if (onValidateVal.isEmpty) {
-            return "Email can not be Empty.";
-          }
-          return null;
-        }, (onSavedVal) {
-          email = onSavedVal;
-        },
-            prefixIcon: Icon(Icons.person),
-            showPrefixIcon: true,
-            hintColor: Colors.black.withOpacity(0.7),
-            borderRadius: 10),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: FormHelper.inputFieldWidget(
-            context,
-            "password",
-            "Password",
-            (onValidateVal) {
-              if (onValidateVal.isEmpty) {
-                return "Password can not be Empty.";
-              }
-              return null;
-            },
-            (onSavedVal) {
-              password = onSavedVal;
-            },
-            prefixIcon: Icon(Icons.lock),
-            showPrefixIcon: true,
-            hintColor: Colors.black.withOpacity(0.7),
-            borderRadius: 10,
-            obscureText: hidePassword,
-            suffixIcon: IconButton(
-                onPressed: () {
-                  setState(() {
-                    hidePassword = !hidePassword;
-                  });
-                },
-                color: Colors.red.withOpacity(0.7),
-                icon: Icon(
-                  hidePassword ? Icons.visibility_off : Icons.visibility,
-                )),
-          ),
-        ),
-        Column(children: <Widget>[
-          InkWell(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => forgotpass()));
-            },
-            child: Text(
-              "Forgot Password?",
-              style: TextStyle(
-                  fontSize: 15, color: Colors.red, letterSpacing: 1.7),
-            ),
-          ),
-        ]),
-        RoundButton(
-          press: () {
-            if (validateandsave()) {
-              setState(() {
-                isAPIcallProcess = true;
-              });
-              LoginRequestModel model =
-                  LoginRequestModel.dart(email: email!, password: password!);
-              APIservice.login(model).then((response) => {
-                    setState(() {
-                      isAPIcallProcess = false;
-                    }),
-                    if (response)
-                      {
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, '/navbar', (route) => false)
-                      }
-                    else
-                      {
-                        FormHelper.showSimpleAlertDialog(
-                            context,
-                            Config.appName,
-                            'Invalid Email/Password !',
-                            "OK", () {
-                          Navigator.pop(context);
-                        })
-                      }
-                  });
-            }
-          },
-          text: 'Login',
-        ),
-        AlreadyHaveAnAccountCheck(
-          press: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return signup();
-                },
-              ),
-            );
-          },
-        ),
-        OnDiverder(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          //mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            socialicons(
-              iconsrc: 'icons/search.png',
+            Positioned(
+              child: Image.asset("images/logo.png"),
+            ),
+            FormHelper.inputFieldWidget(
+                context,
+                "email",
+                "Email Address",
+                (input) =>
+                    !input.contains('@') ? "Email Id should be valid" : null,
+                //     (onValidateVal) {
+                //   if (onValidateVal.isEmpty) {
+                //     return "Email can not be Empty.";
+                //   }
+                //   return null;
+                // },
+                (input) => requestModel.email = input,
+                // (onSavedVal) {
+                //   email = onSavedVal;
+                // },
+                prefixIcon: Icon(Icons.person),
+                showPrefixIcon: true,
+                hintColor: Colors.black.withOpacity(0.7),
+                borderRadius: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: FormHelper.inputFieldWidget(
+                context,
+                "password",
+                "Password",
+                (input) => input.length < 3
+                    ? "Password should be more than 3 characters"
+                    : null,
+                // (onValidateVal) {
+                //   if (onValidateVal.isEmpty) {
+                //     return "Password can not be Empty.";
+                //   }
+                //   return null;
+                // },
+                (input) => requestModel.password = input,
+                // (onSavedVal) {
+                //   password = onSavedVal;
+                // },
+                prefixIcon: Icon(Icons.lock),
+                showPrefixIcon: true,
+                hintColor: Colors.black.withOpacity(0.7),
+                borderRadius: 10,
+                obscureText: hidePassword,
+                suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        hidePassword = !hidePassword;
+                      });
+                    },
+                    color: Colors.red.withOpacity(0.7),
+                    icon: Icon(
+                      hidePassword ? Icons.visibility_off : Icons.visibility,
+                    )),
+              ),
+            ),
+            Column(children: <Widget>[
+              InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => forgotpass()));
+                },
+                child: Text(
+                  "Forgot Password?",
+                  style: TextStyle(
+                      fontSize: 15, color: Colors.red, letterSpacing: 1.7),
+                ),
+              ),
+            ]),
+            RoundButton(
+              press: () {
+                // {
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(builder: (context) => const nav_bar()),
+                //   );
+                // }
+                // ;
+                if (validateandsave()) {
+                  // print(requestModel.toJson());
+
+                  setState(() {
+                    isAPIcallProcess = true;
+                  });
+
+                  APIService apiService = APIService();
+                  apiService.login(requestModel).then((value) => {
+                        // ignore: unnecessary_null_comparison
+                        if (value != null)
+                          {
+                            setState(() {
+                              isAPIcallProcess = false;
+                            }),
+                            // if (value.token.isNotEmpty)
+                            if (value)
+                              {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const nav_bar()),
+                                )
+                                // Navigator.pushNamedAndRemoveUntil(
+                                //     context, '/navbar', (route) => false)
+                                // // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //       builder: (context) => const nav_bar()),
+                                // ),
+                                // final snackBar =
+                                //     SnackBar(content: Text("Login Successful"));
+                                // scaffoldkey.currentState?.showSnackBar(snackBar);
+                              }
+                            else
+                              {
+                                FormHelper.showSimpleAlertDialog(
+                                    context,
+                                    "Your Sawaal",
+                                    'Invalid Email/Password !',
+                                    "OK", () {
+                                  Navigator.pop(context);
+                                }),
+                                // final snackBar = SnackBar(content: Text(value.error));
+                                // scaffoldkey.currentState?.showSnackBar(snackBar);
+                              }
+                          }
+                      });
+                }
+              },
+              // {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => const nav_bar()),
+              //   );
+              // },
+              // if (validateandsave()) {
+              //   setState(() {
+              //     isAPIcallProcess = true;
+              //   });
+              //   LoginRequestModel model =
+              //       LoginRequestModel(email: email!, password: password!);
+              //   APIservice.login(model).then((response) => {
+              //         setState(() {
+              //           isAPIcallProcess = false;
+              //         }),
+              //         if (response)
+              //           {
+              //             Navigator.pushNamedAndRemoveUntil(
+              //                 context, '/navbar', (route) => false)
+              //           }
+              //         else
+              //           {
+              //             FormHelper.showSimpleAlertDialog(
+              //                 context,
+              //                 Config.appName,
+              //                 'Invalid Email/Password !',
+              //                 "OK", () {
+              //               Navigator.pop(context);
+              //             })
+              //           }
+              //       });
+              // }
+              // },
+              text: 'Login',
+            ),
+            AlreadyHaveAnAccountCheck(
               press: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const nav_bar()),
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return signup();
+                    },
+                  ),
                 );
               },
             ),
-            socialicons(
-              iconsrc: 'icons/facebook.png',
-              press: () {},
-            ),
-            socialicons(
-              iconsrc: 'icons/apple.png',
-              press: () {},
+            OnDiverder(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                socialicons(
+                  iconsrc: 'icons/search.png',
+                  press: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const nav_bar()),
+                    );
+                  },
+                ),
+                socialicons(
+                  iconsrc: 'icons/facebook.png',
+                  press: () {},
+                ),
+                socialicons(
+                  iconsrc: 'icons/apple.png',
+                  press: () {},
+                ),
+              ],
             ),
           ],
-        ),
-      ],
-    ));
+        ));
   }
 
   bool validateandsave() {
