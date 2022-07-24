@@ -1,6 +1,5 @@
-import 'package:YourSawaal/componet/Models/signup_request_model.dart';
+import 'package:YourSawaal/componet/Models/signup_response_model.dart';
 import 'package:YourSawaal/componet/api_service.dart';
-import 'package:YourSawaal/componet/config.dart';
 import 'package:flutter/material.dart';
 import 'package:YourSawaal/screens/login.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
@@ -16,12 +15,20 @@ class signupbody extends StatefulWidget {
 }
 
 class signupstate extends State<signupbody> {
+  final scaffoldkey = GlobalKey<ScaffoldState>();
   bool isAPIcallProcess = false;
   bool hidePassword = true;
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
+  String? fname;
+  String? lname;
   String? email;
   String? password;
-  String? name;
+  late signupRequestModel requestModel;
+  @override
+  void initState() {
+    super.initState();
+    requestModel = signupRequestModel();
+  }
 
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
@@ -39,125 +46,212 @@ class signupstate extends State<signupbody> {
 
   Widget _signupUI(BuildContext context) {
     return Container(
+        key: scaffoldkey,
         child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Positioned(
-          child: Image.asset("images/logo2.png"),
-        ),
-        SizedBox(
-          height: 100,
-        ),
-        FormHelper.inputFieldWidget(context, "name", "Name", (onValidateVal) {
-          if (onValidateVal.isEmpty) {
-            return "Name can not be Empty.";
-          }
-          return null;
-        }, (onSavedVal) {
-          name = onSavedVal;
-        },
-            prefixIcon: Icon(Icons.person),
-            showPrefixIcon: true,
-            hintColor: Colors.black.withOpacity(0.7),
-            borderRadius: 10),
-        Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: FormHelper.inputFieldWidget(context, "email", "Email Address",
-              (onValidateVal) {
-            if (onValidateVal.isEmpty) {
-              return "Email can not be Empty.";
-            }
-            return null;
-          }, (onSavedVal) {
-            email = onSavedVal;
-          },
-              prefixIcon: Icon(Icons.person),
-              showPrefixIcon: true,
-              hintColor: Colors.black.withOpacity(0.7),
-              borderRadius: 10),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: FormHelper.inputFieldWidget(
-            context,
-            "password",
-            "Password",
-            (onValidateVal) {
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Positioned(
+              child: Image.asset("images/logo2.png"),
+            ),
+            SizedBox(
+              height: 60,
+            ),
+            FormHelper.inputFieldWidget(context, "fname", "First Name",
+                (onValidateVal) {
               if (onValidateVal.isEmpty) {
-                return "Password can not be Empty.";
+                return "Name can not be Empty.";
               }
               return null;
-            },
-            (onSavedVal) {
-              password = onSavedVal;
-            },
-            prefixIcon: Icon(Icons.lock),
-            showPrefixIcon: true,
-            hintColor: Colors.black.withOpacity(0.7),
-            borderRadius: 10,
-            obscureText: hidePassword,
-            suffixIcon: IconButton(
-                onPressed: () {
-                  setState(() {
-                    hidePassword = !hidePassword;
-                  });
-                },
-                color: Colors.red.withOpacity(0.7),
-                icon: Icon(
-                  hidePassword ? Icons.visibility_off : Icons.visibility,
-                )),
-          ),
-        ),
-        RoundButton(
-          press: () {
-            if (validateandsave()) {
-              setState(() {
-                isAPIcallProcess = true;
-              });
-              RegisterRequestModel model = RegisterRequestModel(
-                  name: name!, email: email!, password: password!);
-              APIservice.register(model).then((response) => {
-                    setState(() {
-                      isAPIcallProcess = true;
-                    }),
-                    if (response.data != null)
-                      {
-                        FormHelper.showSimpleAlertDialog(
-                            context,
-                            Config.appName,
-                            'Signup Successfull. Please Login to access',
-                            "OK", () {
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, '/login', (route) => false);
-                        }),
-                      }
-                    else
-                      {
-                        FormHelper.showSimpleAlertDialog(
-                            context, Config.appName, response.message, "OK",
-                            () {
-                          Navigator.pop(context);
-                        })
-                      }
-                  });
-            }
-          },
-          text: 'Signup',
-        ),
-        AlreadyHaveAnAccountCheck(
-            login: false,
-            press: () {
-              Navigator.push(
+            }, (input) => requestModel.fname = input,
+                // (onSavedVal) {
+                //   name = onSavedVal;
+                // },
+                prefixIcon: Icon(Icons.person),
+                showPrefixIcon: true,
+                hintColor: Colors.black.withOpacity(0.7),
+                borderRadius: 10),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: FormHelper.inputFieldWidget(context, "lname", "Last Name",
+                  (onValidateVal) {
+                if (onValidateVal.isEmpty) {
+                  return "Name can not be Empty.";
+                }
+                return null;
+              }, (input) => requestModel.lname = input,
+                  // (onSavedVal) {
+                  //   name = onSavedVal;
+                  // },
+                  prefixIcon: Icon(Icons.person),
+                  showPrefixIcon: true,
+                  hintColor: Colors.black.withOpacity(0.7),
+                  borderRadius: 10),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: FormHelper.inputFieldWidget(
+                  context,
+                  "email",
+                  "Email Address",
+                  (input) =>
+                      !input.contains('@') ? "Email Id should be valid" : null,
+                  //     (onValidateVal) {
+                  //   if (onValidateVal.isEmpty) {
+                  //     return "Email can not be Empty.";
+                  //   }
+                  //   return null;
+                  // },
+                  (input) => requestModel.email = input,
+                  //  (onSavedVal) {
+                  //   email = onSavedVal;
+                  // },
+                  prefixIcon: Icon(Icons.person),
+                  showPrefixIcon: true,
+                  hintColor: Colors.black.withOpacity(0.7),
+                  borderRadius: 10),
+            ),
+            // Padding(
+            //   padding: const EdgeInsets.only(top: 10),
+            //   child: FormHelper.inputFieldWidget(context, "name", "Name",
+            //       (onValidateVal) {
+            //     if (onValidateVal.isEmpty) {
+            //       return "Name can not be Empty.";
+            //     }
+            //     return null;
+            //   }, (input) => requestModel.name = input,
+            //       // (onSavedVal) {
+            //       //   name = onSavedVal;
+            //       // },
+            //       prefixIcon: Icon(Icons.person),
+            //       showPrefixIcon: true,
+            //       hintColor: Colors.black.withOpacity(0.7),
+            //       borderRadius: 10),
+            // ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: FormHelper.inputFieldWidget(
                 context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return login();
-                  },
-                ),
-              );
-            }),
-      ],
-    ));
+                "password",
+                "Password",
+                (input) => input.length < 3
+                    ? "Password should be more than 3 characters"
+                    : null,
+                // (onValidateVal) {
+                //   if (onValidateVal.isEmpty) {
+                //     return "Password can not be Empty.";
+                //   }
+                //   return null;
+                // },
+                (input) => requestModel.password = input,
+                // (onSavedVal) {
+                //   password = onSavedVal;
+                // },
+                prefixIcon: Icon(Icons.lock),
+                showPrefixIcon: true,
+                hintColor: Colors.black.withOpacity(0.7),
+                borderRadius: 10,
+                obscureText: hidePassword,
+                suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        hidePassword = !hidePassword;
+                      });
+                    },
+                    color: Colors.red.withOpacity(0.7),
+                    icon: Icon(
+                      hidePassword ? Icons.visibility_off : Icons.visibility,
+                    )),
+              ),
+            ),
+            RoundButton(
+              press: () {
+                if (validateandsave()) {
+                  setState(() {
+                    isAPIcallProcess = true;
+                  });
+                  APIService apiService = APIService();
+                  apiService.signup(requestModel).then((value) => {
+                        if (value != null)
+                          {
+                            setState(() {
+                              isAPIcallProcess = false;
+                            }),
+                            if (value)
+                              {
+                                FormHelper.showSimpleAlertDialog(
+                                    context,
+                                    "Your Sawaal",
+                                    'Signup Successfull. Please Login to access',
+                                    "OK", () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => login()));
+                                  // Navigator.pushNamedAndRemoveUntil(
+                                  //     context, '/login', (route) => false);
+                                }),
+                              }
+                            else
+                              {
+                                FormHelper.showSimpleAlertDialog(
+                                    context,
+                                    "Your Sawaal",
+                                    "Signup Successfull. Please try again",
+                                    "OK", () {
+                                  Navigator.pop(context);
+                                })
+                              }
+                          }
+                      });
+                }
+                // if (validateandsave()) {
+                //   setState(() {
+                //     isAPIcallProcess = true;
+                //   });
+                //   RegisterRequestModel model = RegisterRequestModel(
+                //       email: email!, name: name!, password: password!);
+                //   APIservice.register(model).then((response) => {
+                //         setState(() {
+                //           isAPIcallProcess = true;
+                //         }),
+                //         if (response.data != null)
+                //           {
+                //             FormHelper.showSimpleAlertDialog(
+                //                 context,
+                //                 Config.appName,
+                //                 'Signup Successfull. Please Login to access',
+                //                 "OK", () {
+                //               Navigator.pushNamedAndRemoveUntil(
+                //                   context, '/login', (route) => false);
+                //             }),
+                //           }
+                //         else
+                //           {
+                //             FormHelper.showSimpleAlertDialog(
+                //                 context, Config.appName, response.message, "OK",
+                //                 () {
+                //               Navigator.pop(context);
+                //             })
+                //           }
+                //       });
+                // }
+              },
+              text: 'Signup',
+            ),
+            AlreadyHaveAnAccountCheck(
+                login: false,
+                press: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return login();
+                      },
+                    ),
+                  );
+                }),
+          ],
+        ));
   }
 
   bool validateandsave() {
