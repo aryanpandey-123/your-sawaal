@@ -1,46 +1,32 @@
-import 'dart:convert';
-
-LoginResponseModel loginResponseJson(String str) =>
-    LoginResponseModel.fromJson(json.decode(str));
-
 class LoginResponseModel {
-  LoginResponseModel({
-    required this.message,
-    required this.data,
-  });
-  late final String message;
-  late final Data? data;
+  final String token;
+  final String error;
 
-  LoginResponseModel.fromJson(Map<String, dynamic> json) {
-    message = json['message'];
-    data = json['data'] != null ? Data.fromJson(json['data']) : null;
-  }
+  LoginResponseModel({required this.token, required this.error});
 
-  Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['message'] = message;
-    _data['data'] = data!.toJson();
-    return _data;
+  factory LoginResponseModel.fromJson(Map<String, dynamic> json) {
+    return LoginResponseModel(
+      token: json["token"] != null ? json["token"] : "",
+      error: json["error"] != null ? json["error"] : "",
+    );
   }
 }
 
-class Data {
-  Data({
-    required this.name,
-    required this.email,
-  });
-  late final String name;
-  late final String email;
+class LoginRequestModel {
+  String? email;
+  String? password;
 
-  Data.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    email = json['email'];
-  }
+  LoginRequestModel({
+    this.email,
+    this.password,
+  });
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['name'] = name;
-    _data['email'] = email;
-    return _data;
+    Map<String, dynamic> map = {
+      'email': email!.trim(),
+      'password': password!.trim(),
+    };
+
+    return map;
   }
 }
