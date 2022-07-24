@@ -5,14 +5,8 @@ import 'package:YourSawaal/screens/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:YourSawaal/screens/delayscreen.dart';
 
-Widget defaulthome = delayscreen();
+// Widget defaulthome = delayscreen();
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  bool _result = await sharedservice.isLoggedIn();
-  if (_result) {
-    defaulthome = nav_bar();
-  }
   runApp(MyApp());
 }
 
@@ -40,11 +34,11 @@ class MyApp extends StatelessWidget {
           textTheme:
               Theme.of(context).textTheme.apply(displayColor: Colors.black)),
       home: delayscreen(),
-      routes: {
-        '/login': (context) => login(),
-        '/home': (context) => nav_bar(),
-        '/register': (context) => signup()
-      },
+      // routes: {
+      //   '/login': (context) => login(),
+      //   '/home': (context) => nav_bar(),
+      //   '/register': (context) => signup()
+      // },
     );
   }
 }
