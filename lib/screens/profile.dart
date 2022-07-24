@@ -1,210 +1,323 @@
-import 'package:YourSawaal/componet/my_clipper.dart';
+import 'package:YourSawaal/componet/pages/editprofile.dart';
 import 'package:flutter/material.dart';
 
-class profile extends StatelessWidget {
+class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
+        elevation: 0.0,
         automaticallyImplyLeading: true,
-        actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.share_outlined))
-        ],
       ),
-      backgroundColor: Colors.white,
       body: Stack(
+        alignment: Alignment.center,
         children: [
-          ClipPath(
-            clipper: MyClipper(),
+          // Column(
+          //   // mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     SizedBox(
+          //       height: size.height * 0.06,
+          //     ),
+          //     Container(
+          //       height: 450,
+          //       width: double.infinity,
+          //       margin: EdgeInsets.symmetric(horizontal: 150),
+          //       child: Column(
+          //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //         children: [
+          //           RaisedButton(
+          //             onPressed: () {
+          //               Navigator.push(
+          //                 context,
+          //                 MaterialPageRoute(
+          //                   builder: (context) {
+          //                     return edit();
+          //                   },
+          //                 ),
+          //               );
+          //             },
+          //             color: Colors.redAccent,
+          //             child: Center(
+          //               child: Text(
+          //                 "Edit",
+          //                 style: TextStyle(
+          //                   fontSize: 23,
+          //                   color: Colors.white,
+          //                 ),
+          //               ),
+          //             ),
+          //           ),
+          //           // Container(
+          //           //   width: double.infinity,
+          //           //   // child: RaisedButton(
+          //           //   //   onPressed: () {
+          //           //   //     Navigator.push(
+          //           //   //       context,
+          //           //   //       MaterialPageRoute(
+          //           //   //         builder: (context) {
+          //           //   //           return edit();
+          //           //   //         },
+          //           //   //       ),
+          //           //   //     );
+          //           //   //   },
+          //           //   //   color: Colors.redAccent,
+          //           //   //   child: Center(
+          //           //   //     child: Text(
+          //           //   //       "Edit",
+          //           //   //       style: TextStyle(
+          //           //   //         fontSize: 23,
+          //           //   //         color: Colors.white,
+          //           //   //       ),
+          //           //   //     ),
+          //           //   //   ),
+          //           //   // ),
+          //           // ),
+          //         ],
+          //       ),
+          //     )
+          //   ],
+          // ),
+          CustomPaint(
             child: Container(
-              // color: Colors.amber,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  Colors.red,
-                  Colors.yellow,
-                ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+            ),
+            painter: HeaderCurvedContainer(),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: size.height * 0.03,
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 40),
+                child: Text(
+                  "User Name",
+                  style: TextStyle(
+                    fontSize: 25,
+                    letterSpacing: 1.5,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width / 3,
+                height: MediaQuery.of(context).size.width / 3,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.redAccent, width: 5),
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: AssetImage('images/user.png'),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: EdgeInsets.only(bottom: 320, left: 110),
+            child: CircleAvatar(
+              radius: 15,
+              backgroundColor: Colors.redAccent,
+              child: IconButton(
+                iconSize: 15,
+                icon: Icon(
+                  Icons.edit,
+                  color: Colors.white,
+                ),
+                onPressed: () {},
               ),
             ),
           ),
-          Column(
-            children: <Widget>[
-              SizedBox(
-                height: 40,
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 125),
-                width: 140,
-                height: 140,
-                child: Stack(children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          width: 4,
-                          color: Theme.of(context).scaffoldBackgroundColor),
-                      boxShadow: [
-                        BoxShadow(
-                            spreadRadius: 2,
-                            blurRadius: 10,
-                            color: Colors.black.withOpacity(0.1),
-                            offset: Offset(0, 10))
-                      ],
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: AssetImage("images/user.png")),
+          Padding(
+            padding: EdgeInsets.only(bottom: 185),
+            child: RaisedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return edit();
+                      },
                     ),
-                  ),
-                  Positioned(
-                      bottom: 6,
-                      right: 6,
-                      child: Container(
-                        height: 30,
-                        width: 30,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                              width: 3,
-                              color: Theme.of(context).scaffoldBackgroundColor),
-                          color: Colors.red,
-                        ),
-                        child: FlatButton(
-                          padding: EdgeInsets.only(),
-                          onPressed: () {},
-                          child: Icon(
-                            Icons.edit_outlined,
-                            color: Colors.white,
-                            size: 18,
+                  );
+                },
+                color: Colors.redAccent,
+                child: Text("Edit")),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 75),
+            child: NumbersWidget(),
+          ),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 350),
+                child: Column(
+                  children: [
+                    Divider(
+                      height: MediaQuery.of(context).size.height * 0.01,
+                      thickness: 5,
+                      color: Color.fromARGB(96, 158, 158, 158),
+                    ),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 10),
+                          child: Text(
+                            "Credentials & Highlights",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20),
                           ),
                         ),
-                      )),
-                ]),
-              ),
-              SizedBox(
-                height: 15,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 100),
+                          child: IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.edit_note_outlined,
+                                size: 35,
+                              )),
+                        )
+                      ],
+                    ),
+                    TextButton.icon(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.card_travel_rounded,
+                          color: Colors.black,
+                        ),
+                        label: Text(
+                          "Add Employment",
+                          style: TextStyle(color: Colors.black),
+                        )),
+                    TextButton.icon(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.school_outlined,
+                          color: Colors.black,
+                        ),
+                        label: Text(
+                          "Add Education",
+                          style: TextStyle(color: Colors.black),
+                        )),
+                    TextButton.icon(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.date_range_outlined,
+                          color: Colors.black,
+                        ),
+                        label: Text(
+                          "Joined On date",
+                          style: TextStyle(color: Colors.black),
+                        )),
+                    Divider(
+                      height: MediaQuery.of(context).size.height * 0.01,
+                      thickness: 5,
+                      color: Color.fromARGB(96, 158, 158, 158),
+                    ),
+                  ],
+                ),
               ),
               Padding(
-                  padding: EdgeInsets.only(left: 130),
-                  child: Text(
-                    "User Name",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  )),
+                padding: const EdgeInsets.only(top: 1),
+                child: DefaultTabController(
+                    length: 3,
+                    child: Column(children: [
+                      TabBar(tabs: [
+                        Tab(
+                          child: Text(
+                            "About",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Tab(
+                          child: Text(
+                            "Posts",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Tab(
+                          child: Text(
+                            "Questions",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        )
+                      ]),
+                    ])),
+              )
             ],
           ),
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 280, horizontal: 150),
-            child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                    fixedSize: const Size(300, 30),
-                    textStyle: TextStyle(fontSize: 15),
-                    primary: Colors.blueAccent,
-                    side: BorderSide(width: 1.5, color: Colors.red),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10))),
-                onPressed: () {},
-                child: FlatButton(
-                    onPressed: () {},
-                    child: Text(
-                      "Edit",
-                      style: TextStyle(color: Colors.red),
-                    ))),
-          ),
-          Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              child: Container(
-                margin: EdgeInsets.only(top: 330),
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.red,
-                ),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "00",
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      ),
-                      Text(
-                        "Followers",
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      )
-                    ]),
-              )),
-          Padding(
-              padding: EdgeInsets.symmetric(horizontal: 150),
-              child: Container(
-                margin: EdgeInsets.only(top: 360),
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.red,
-                ),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "00",
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      ),
-                      Text(
-                        "Posts",
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      )
-                    ]),
-              )),
-          Positioned(
-              height: 745,
-              child: Container(
-                margin: EdgeInsets.only(left: 280),
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.red,
-                ),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "00",
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      ),
-                      Text(
-                        "Following",
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      )
-                    ]),
-              )),
         ],
       ),
     );
   }
+}
+
+class HeaderCurvedContainer extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()..color = Colors.redAccent;
+    Path path = Path()
+      ..relativeLineTo(0, 130)
+      ..quadraticBezierTo(size.width / 2, 200, size.width, 130)
+      ..relativeLineTo(0, -150)
+      ..close();
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
+}
+
+class NumbersWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          buildButton(context, '00', 'Posts'),
+          buildDivider(),
+          buildButton(context, '35', 'Following'),
+          buildDivider(),
+          buildButton(context, '50', 'Followers'),
+        ],
+      );
+  Widget buildDivider() => Container(
+        color: Colors.black,
+        height: 15,
+        child: VerticalDivider(),
+      );
+
+  Widget buildButton(BuildContext context, String value, String text) =>
+      MaterialButton(
+        padding: EdgeInsets.symmetric(vertical: 4),
+        onPressed: () {},
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              value,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+            ),
+            SizedBox(height: 2),
+            Text(
+              text,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      );
 }
